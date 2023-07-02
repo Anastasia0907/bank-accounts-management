@@ -37,9 +37,8 @@ public class BankAccountServiceImpl implements BankAccountService {
         System.out.print("Enter initial account balance: ");
         BigDecimal initialBalance = sc.nextBigDecimal();
         sc.nextLine();
-        System.out.print("Enter account currency (USD, EURO, BYN): ");
-        String currencyStr = sc.nextLine();
-        Currency currency = Currency.valueOf(currencyStr);
+
+        Currency currency = chooseCurrency();
 
         BankAccount bankAccount = new BankAccount(bankClient, currency, initialBalance);
         bankAccount = bankAccountDAO.save(bankAccount);
@@ -47,6 +46,18 @@ public class BankAccountServiceImpl implements BankAccountService {
         transactionDAO.save(transaction);
 
         System.out.printf("New account created with ID: %s%n", bankAccount.getId());
+    }
+
+    private Currency chooseCurrency() {
+        System.out.print("Enter account currency (USD, EURO, BYN): ");
+
+        String currencyStr = sc.next();
+        try {
+            return Currency.valueOf(currencyStr);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid choice. Try again.");
+            return chooseCurrency();
+        }
     }
 
     @Override

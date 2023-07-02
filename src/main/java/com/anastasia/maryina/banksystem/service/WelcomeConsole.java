@@ -1,6 +1,6 @@
 package com.anastasia.maryina.banksystem.service;
 
-public interface InteractiveConsoleService {
+public interface WelcomeConsole {
 
     void run();
 }

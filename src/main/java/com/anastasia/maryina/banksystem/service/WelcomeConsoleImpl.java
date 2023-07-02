@@ -5,16 +5,18 @@ import com.anastasia.maryina.banksystem.model.User;
 
 import java.util.Scanner;
 
-public class InteractiveConsole implements InteractiveConsoleService {
+import static com.anastasia.maryina.banksystem.utils.StringConstants.WRONG_CHOICE;
+
+public class WelcomeConsoleImpl implements WelcomeConsole {
 
     private static final Scanner sc = new Scanner(System.in);
 
     private final UserService userService;
     private final AccountsManagementConsole accountsManagementConsole;
 
-    public InteractiveConsole() {
+    public WelcomeConsoleImpl() {
         this.userService = new UserServiceImpl();
-        this.accountsManagementConsole = new AccountsManagementConsole();
+        this.accountsManagementConsole = new AccountsManagementConsoleImpl();
     }
 
     @Override
@@ -42,10 +44,10 @@ public class InteractiveConsole implements InteractiveConsoleService {
                         break;
                     }
                     System.out.printf("Hello, %s%n", user.getName());
-                    accountsManagementConsole.manageBankAccounts(user);
+                    accountsManagementConsole.run(user);
                 }
                 case 3 -> System.out.println("\nThank you for choosing SimonBank.");
-                default -> System.out.println("Wrong choice !");
+                default -> System.out.println(WRONG_CHOICE);
             }
         }
     }

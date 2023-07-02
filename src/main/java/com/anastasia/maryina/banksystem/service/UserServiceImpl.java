@@ -6,6 +6,9 @@ import com.anastasia.maryina.banksystem.model.User;
 
 import java.util.Scanner;
 
+import static com.anastasia.maryina.banksystem.utils.StringConstants.LINE_SEPARATOR;
+import static com.anastasia.maryina.banksystem.utils.StringConstants.WRONG_CHOICE;
+
 public class UserServiceImpl implements UserService {
 
     private static final Scanner sc = new Scanner(System.in);
@@ -25,7 +28,7 @@ public class UserServiceImpl implements UserService {
         String pid = sc.nextLine();
         while (userDAO.existsByPid(pid)) {
             System.out.println("User with this PID already exists.");
-            System.out.println("-------------------");
+            System.out.println(LINE_SEPARATOR);
             System.out.println("1. Try again. ");
             System.out.println("2. Exit. ");
             var choice = sc.nextInt();
@@ -38,14 +41,14 @@ public class UserServiceImpl implements UserService {
                 case 2:
                     return null;
                 default:
-                    System.out.println("Wrong choice !");
+                    System.out.println(WRONG_CHOICE);
             }
         }
         System.out.println("Set Username : ");
         String username = sc.next();
         while (userDAO.existsByUsername(username)) {
             System.out.println("Username already exists.");
-            System.out.println("-------------------");
+            System.out.println(LINE_SEPARATOR);
             System.out.println("1. Set again. ");
             System.out.println("2. Exit. ");
             var choice = sc.nextInt();
@@ -58,7 +61,7 @@ public class UserServiceImpl implements UserService {
                 case 2:
                     return null;
                 default:
-                    System.out.println("Wrong choice !");
+                    System.out.println(WRONG_CHOICE);
             }
         }
         System.out.println("Set a password:");
