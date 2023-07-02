@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.16.xsd">
+
+    <changeSet id="1" author="Anastasia Maryina">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="users"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="users">
+            <column name="id" type="uuid" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="users_pkey"/>
+            </column>
+            <column name="name" type="varchar(256)"/>
+            <column name="pid" type="varchar(256)">
+                <constraints unique="true"/>
+            </column>
+            <column name="username" type="varchar(256)">
+                <constraints unique="true"/>
+            </column>
+            <column name="password" type="varchar(256)"/>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="users"/>
+        </rollback>
+
+    </changeSet>
+
+    <changeSet id="2" author="Anastasia Maryina">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="banks"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="banks">
+            <column name="id" type="uuid" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="banks_pkey"/>
+            </column>
+            <column name="name" type="varchar(256)">
+                <constraints unique="true"/>
+            </column>
+            <column name="individuals_transfer_commission" type="decimal(38,4)"/>
+            <column name="legal_entities_transfer_commission" type="decimal(38,4)"/>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="banks"/>
+        </rollback>
+
+    </changeSet>
+
+    <changeSet id="3" author="Anastasia Maryina">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="bank_clients"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="bank_clients">
+            <column name="id" type="uuid" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="bank_clients_pkey"/>
+            </column>
+            <column name="user_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="bank_clients_user_id_fk" referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="bank_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="bank_clients_bank_id_fk" referencedTableName="banks"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="client_type" type="varchar(256)"/>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="bank_clients"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="4" author="Anastasia Maryina">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="bank_accounts"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="bank_accounts">
+            <column name="id" type="uuid" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="bank_accounts_pkey"/>
+            </column>
+            <column name="owner_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="bank_accounts_owner_id_fk"
+                             referencedTableName="bank_clients"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="currency" type="varchar(256)"/>
+            <column name="total_amount" type="decimal(38,2)"/>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="bank_accounts"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="5" author="Anastasia Maryina">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="exchange_rates"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="exchange_rates">
+            <column name="id" type="uuid" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="exchange_rate_pkey"/>
+            </column>
+            <column name="bank_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="exchange_rates_bank_id_fk" referencedTableName="banks"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="from_currency" type="varchar(256)"/>
+            <column name="to_currency" type="varchar(256)"/>
+            <column name="rate" type="decimal(38,4)"/>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="exchange_rates"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="6" author="Anastasia Maryina">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="transactions"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="transactions">
+            <column name="id" type="uuid" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="transactions_pkey"/>
+            </column>
+            <column name="account_id" type="uuid">
+                <constraints foreignKeyName="transaction__bank_account_fk"
+                             referencedTableName="bank_accounts"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="transaction_type" type="varchar(256)"/>
+            <column name="amount" type="decimal(38,2)"/>
+            <column name="commission" type="decimal(38,2)"/>
+            <column name="total" type="decimal(38,2)"/>
+            <column name="date" type="datetime"/>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="exchange_rates"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
